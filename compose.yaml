@@ -1,0 +1,59 @@
+services:
+  valkey:
+    image: valkey/valkey:9.1.1-alpine
+    container_name: valkey
+    restart: unless-stopped
+
+    command:
+      - valkey-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - "${VALKEY_PASSWORD}"
+
+    environment:
+      VALKEY_PASSWORD: "${VALKEY_PASSWORD}"
+
+    ports:
+      # Restricts host access to the local machine.
+      - "127.0.0.1:${VALKEY_PORT:-6379}:6379"
+
+    volumes:
+      - valkey-data:/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'valkey-cli --no-auth-warning -a "$$VALKEY_PASSWORD" ping | grep PONG',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    restart: unless-stopped
+
+    depends_on:
+      valkey:
+        condition: service_healthy
+
+    environment:
+      REDIS_HOST: valkey
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: "${VALKEY_PASSWORD}"
+      REDIS_DB: 0
+
+      # Avoid KEYS when there are many keys.
+      USE_SCAN: "true"
+      SCAN_COUNT: 100
+
+    ports:
+      - "127.0.0.1:8081:8081"
+
+volumes:
+  tinyrdm-data:
+  valkey-data:
