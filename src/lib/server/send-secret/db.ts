@@ -1,7 +1,7 @@
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { valkey } from '../valkey'
 import { Schema, Struct } from 'effect'
-import { nanoid } from '@/lib/client/nanoid'
+import { nanoid } from '@/lib/nanoid'
 
 const sendSecretDataSchema = Schema.Struct({
   cipher: Schema.String,

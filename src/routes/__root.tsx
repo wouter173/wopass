@@ -3,10 +3,11 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
+import { Header } from '@/components/header'
 
 export const Route = createRootRoute({
   head: () => ({
-    meta: [{ charSet: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }, { title: 'TanStack Start Starter' }],
+    meta: [{ charSet: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }, { title: 'Wopass' }],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   shellComponent: RootDocument,
@@ -14,11 +15,12 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-zinc-950 text-white">
       <head>
         <HeadContent />
       </head>
       <body>
+        <Header />
         {children}
         <TanStackDevtools
           config={{ position: 'bottom-right' }}

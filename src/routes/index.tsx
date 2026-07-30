@@ -1,12 +1,12 @@
-import { SendText } from '@/components/send-text'
+import { SendSecret } from '@/components/send-secret-input'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({ component: HomePage })
 
-function Home() {
+function HomePage() {
   return (
-    <div className="p-8">
-      <SendText />
+    <div className="p-4 w-full md:w-2/5 mx-auto">
+      <SendSecret />
     </div>
   )
 }

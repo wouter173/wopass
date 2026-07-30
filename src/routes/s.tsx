@@ -1,42 +1,24 @@
-import { createFileRoute, useLocation } from '@tanstack/react-router'
-import { Schema } from 'effect'
-import * as crypto from '@/lib/client/crypto'
-import { useState } from 'react'
-import { getSendSecret } from '@/lib/server/send-secret/functions'
+import { createFileRoute, Navigate, useLocation } from '@tanstack/react-router'
+import { Result, Schema } from 'effect'
+import { SendSecretDecrypt } from '@/components/send-secret-decrypt'
 
-export const Route = createFileRoute('/s')({
-  component: SendSecretDecryptComponent,
-})
+export const Route = createFileRoute('/s')({ component: SendSecretDecryptPage })
 
-const paramsSchema = Schema.Struct({ s: Schema.String, i: Schema.String })
+const paramsSchema = Schema.Struct({ s: Schema.String, i: Schema.String, v: Schema.NumberFromString })
+const decodeParamsSchema = Schema.decodeUnknownResult(paramsSchema)
 
-const decodeParamsSchema = Schema.decodeUnknownSync(paramsSchema)
-
-function SendSecretDecryptComponent() {
+function SendSecretDecryptPage() {
   const hash = useLocation({ select: (location) => location.hash })
-  const [result, setResult] = useState<string | null>(null)
 
   const params = Object.fromEntries(new URLSearchParams(hash).entries())
-  const { s: encodedRootSecret, i: id } = decodeParamsSchema(params)
+  const result = decodeParamsSchema(params)
+  if (Result.isFailure(result)) return <Navigate to="/" replace />
 
-  const decrypt = async () => {
-    const rootSecret = crypto.base64UrlDecode(encodedRootSecret)
-
-    const accessToken = await crypto.hkdf({ salt: id, secret: rootSecret, info: 'wopass:message-access-token:v1', size: 32 })
-    const encryptionSecret = await crypto.hkdf({ salt: id, secret: rootSecret, info: 'wopass:message-encryption-secret:v1', size: 32 })
-    const password = crypto.base64UrlEncode(encryptionSecret)
-
-    const { cipher } = await getSendSecret({ data: { id }, headers: { Authorization: `Bearer ${crypto.base64UrlEncode(accessToken)}` } })
-
-    const text = await crypto.decryptMessage({ cipher, password })
-
-    setResult(text)
-  }
+  const { s: rootSecret, i: id, v: version } = result.success
 
   return (
-    <>
-      <div>Result</div>
-      {result ? <span>{result}</span> : <button onClick={decrypt}>decrypt</button>}
-    </>
+    <div className="p-8 w-full md:w-2/5 mx-auto">
+      <SendSecretDecrypt id={id} initialRootSecret={rootSecret} version={version} />
+    </div>
   )
 }

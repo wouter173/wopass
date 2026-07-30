@@ -1,5 +1,5 @@
 import Valkey from 'iovalkey'
-import { env } from '../client/env'
+import { env } from './env'
 
 export const valkey = new Valkey({
   host: env.VALKEY_HOST,

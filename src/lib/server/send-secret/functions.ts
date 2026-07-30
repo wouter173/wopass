@@ -13,10 +13,13 @@ const postSendSchema = Schema.Struct({
   cipher: Schema.String,
   accessVerifier: Schema.String,
 })
+const MAX_ENCRYPTED_SECRET_LENGTH = 3 * 1024 * 102
 
 export const postSendSecretData = createServerFn({ method: 'POST' })
   .validator((data: typeof postSendSchema.Type) => Schema.decodeUnknownPromise(postSendSchema)(data))
   .handler(async ({ data: { id, cipher, accessVerifier } }) => {
+    if (cipher.length > MAX_ENCRYPTED_SECRET_LENGTH) throw new Error('Encrypted secret is too large')
+
     await db.setSendSecretData({ id, cipher, accessVerifier })
   })
 
@@ -31,7 +34,7 @@ export const getSendSecret = createServerFn({ method: 'POST' })
     if (!accessToken) throw new Error('No Authorization')
 
     const sendSecret = await db.getSendSecret(id)
-    if (sendSecret?.state !== 'ready') throw new Error('Illegal State')
+    if (sendSecret?.state !== 'ready') throw new Error('Not found')
     const accessVerifier = createHash('sha256').update(Buffer.from(accessToken, 'base64url')).digest('base64url')
 
     if (sendSecret.accessVerifier !== accessVerifier) throw new Error('Illegal AccessToken')

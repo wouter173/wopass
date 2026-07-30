@@ -5,15 +5,15 @@ export const generateRootSecret = createClientOnlyFn((): Uint8Array => {
   return crypto.getRandomValues(new Uint8Array(32))
 })
 
-export const encryptMessage = createClientOnlyFn(async ({ text, password }: { text: string; password: string }) => {
-  const message = await pgp.createMessage({ text })
+export const encryptMessage = createClientOnlyFn(async ({ payload, password }: { payload: Uint8Array<ArrayBuffer>; password: string }) => {
+  const message = await pgp.createMessage({ binary: payload })
   return await pgp.encrypt({ message, passwords: [password], format: 'armored' })
 })
 
 export const decryptMessage = createClientOnlyFn(async ({ cipher, password: passphrase }: { cipher: string; password: string }) => {
   const message = await pgp.readMessage({ armoredMessage: cipher })
-  const { data } = await pgp.decrypt({ message, passwords: [passphrase] })
-  return `${data}`
+  const { data } = await pgp.decrypt({ message, passwords: [passphrase], format: 'binary' })
+  return Uint8Array.from(data)
 })
 
 export const sha256 = createClientOnlyFn(async (input: Uint8Array<ArrayBufferLike>): Promise<Uint8Array<ArrayBuffer>> => {
