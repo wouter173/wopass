@@ -1,3 +1,4 @@
+import { cn } from '@/lib/cn'
 import { Link } from '@tanstack/react-router'
 import { UploadIcon } from 'lucide-react'
 
@@ -9,7 +10,11 @@ export function Header() {
           <Link
             to={'/'}
             activeOptions={{ exact: true }}
-            className="w-fit text-sm flex items-center justify-center gap-1 not-[&.active]:text-zinc-300 not-[&.active]:border-transparent px-2 py-1 rounded-lg border [&.active]:border-white/5 [&.active]:text-white [&.active]:bg-zinc-800"
+            className={cn(
+              'w-fit text-sm flex items-center justify-center gap-1  px-2 py-1 rounded-lg border',
+              '[&.active]:border-white/5 [&.active]:text-white [&.active]:bg-zinc-800',
+              'not-[&.active]:text-zinc-300 not-[&.active]:border-transparent',
+            )}
           >
             <UploadIcon size={14} /> Send
           </Link>

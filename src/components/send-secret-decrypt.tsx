@@ -2,16 +2,9 @@ import { useEffect, useState } from 'react'
 import * as crypto from '@/lib/client/crypto'
 import { getSendSecret } from '@/lib/server/send-secret/functions'
 import { unpackSecretPayload } from '@/lib/client/payload'
+import { KeyRoundIcon } from 'lucide-react'
 
-export function SendSecretDecrypt({
-  id,
-  initialRootSecret,
-  version,
-}: {
-  id: string
-  initialRootSecret: string | undefined
-  version: number
-}) {
+export function SendSecretDecrypt({ params }: { params: { id: string; initialRootSecret: string | undefined; version: number } | null }) {
   const [result, setResult] = useState<
     { state: 'error'; error: string } | { state: 'success'; text: string; files: Array<File> } | { state: 'pending' }
   >({
@@ -20,6 +13,9 @@ export function SendSecretDecrypt({
 
   const decrypt = async () => {
     try {
+      if (!params) throw new Error('Not found')
+      const { id, initialRootSecret, version } = params
+
       if (version !== 1) throw new Error('Unsupported version')
 
       if (!initialRootSecret) throw new Error('no root secret') // TODO: handle
@@ -43,17 +39,29 @@ export function SendSecretDecrypt({
 
   return (
     <>
-      <div>Result</div>
-      {result.state === 'pending' && <button onClick={decrypt}>decrypt</button>}
-      {result.state === 'success' && (
-        <div>
-          <span>{result.text}</span>
-          {result.files.map((file) => (
-            <DownloadAttachment file={file} />
-          ))}
+      <div className="pt-12 flex gap-2 flex-col">
+        <h2 className=" text-zinc-300 text-lg font-semibold flex gap-2 items-center">Decrypt secret</h2>
+        <div className="bg-zinc-800 border border-white/10 flex w-full justify-center mx-auto flex-col rounded-2xl p-3 gap-2">
+          {result.state === 'pending' && (
+            <button
+              className="active:scale-95 disabled:opacity-45 focus:outline-none focus-visible:ring-1 ring-cyan-300 ring-offset-2 ring-offset-zinc-800 text-sm shadow-2xs shadow-[#2D6074] bg-cyan-900 border-white/10 w-full px-2 py-2 rounded-lg border font-medium enabled:hover:bg-cyan-800 transition-all flex items-center justify-center gap-1.5"
+              onClick={decrypt}
+            >
+              <KeyRoundIcon size={16} />
+              decrypt
+            </button>
+          )}
+          {result.state === 'success' && (
+            <div>
+              <span>{result.text}</span>
+              {result.files.map((file) => (
+                <DownloadAttachment file={file} />
+              ))}
+            </div>
+          )}
+          {result.state === 'error' && <span className="text-red-500">{result.error}</span>}
         </div>
-      )}
-      {result.state === 'error' && <span className="text-red-500">{result.error}</span>}
+      </div>
     </>
   )
 }

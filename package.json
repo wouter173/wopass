@@ -18,6 +18,7 @@
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-start": "latest",
     "better-auth": "^1.5.3",
+    "clsx": "^2.1.1",
     "effect": "4.0.0-beta.101",
     "iovalkey": "^0.3.3",
     "lucide-react": "^1.27.0",
@@ -27,6 +28,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-dropzone": "^19.1.1",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

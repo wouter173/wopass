@@ -1,3 +1,4 @@
+import { formatSize } from '@/lib/formatting'
 import { XIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -34,7 +35,9 @@ export function FilePreview({ file, onRemove }: { file: File; onRemove: () => vo
       <div className="p-2 flex flex-col justify-center">
         <span className="text-zinc-300 text-sm">{file.name}</span>
 
-        <span className="text-zinc-400 text-sm">{file.type.split('/')[1]}</span>
+        <span className="text-zinc-400 text-sm">
+          {file.type.split('/')[1]} {formatSize(file.size)}
+        </span>
       </div>
       <button
         type="button"

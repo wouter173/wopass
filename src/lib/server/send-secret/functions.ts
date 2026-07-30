@@ -13,7 +13,7 @@ const postSendSchema = Schema.Struct({
   cipher: Schema.String,
   accessVerifier: Schema.String,
 })
-const MAX_ENCRYPTED_SECRET_LENGTH = 3 * 1024 * 102
+const MAX_ENCRYPTED_SECRET_LENGTH = 3 * 1024 * 1024
 
 export const postSendSecretData = createServerFn({ method: 'POST' })
   .validator((data: typeof postSendSchema.Type) => Schema.decodeUnknownPromise(postSendSchema)(data))
