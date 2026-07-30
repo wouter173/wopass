@@ -64,7 +64,7 @@ export function SendSecret() {
         >
           <div
             {...getRootProps({ role: 'group', 'aria-label': 'Message and attachments' })}
-            className={`overflow-clip focus-within:ring-1 ring-cyan-600 ring-offset-2 ring-offset-zinc-950 relative w-full bg-zinc-800 border border-white/10 flex justify-center mx-auto rounded-2xl ${isDragActive ? 'border-zinc-800!' : ''}`}
+            className={`overflow-clip has-[#text:focus]:ring-1 ring-cyan-300 ring-offset-2 ring-offset-zinc-950 relative w-full bg-zinc-800 border border-white/10 flex justify-center mx-auto rounded-2xl ${isDragActive ? 'border-zinc-800!' : ''}`}
           >
             {isDragActive ? (
               <div className="not-sr-only absolute -inset-1 grid place-items-center pointer-events-none bg-black/50 rounded-2xl">
@@ -77,12 +77,12 @@ export function SendSecret() {
             <input type="text" {...getInputProps({ className: 'sr-only' })} />
             <div className="w-full h-full flex gap-2 flex-col">
               <textarea
+                name="text"
+                id="text"
                 placeholder="Start typing or drag in a file to continue"
                 className="focus:outline-none rounded-2xl field-sizing-content min-h-40 resize-none px-3 py-3"
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
-                name="text"
-                id=""
               />
 
               <div className="p-2 flex items-end gap-2">
@@ -102,7 +102,7 @@ export function SendSecret() {
                 </div>
 
                 <button
-                  className="bg-zinc-800 h-min border shrink-0 border-white/5 hover:bg-zinc-700 w-fit text-xs px-2.5 py-1.5 rounded-2xl flex items-center gap-1"
+                  className="focus:outline-none focus:ring-1 ring-cyan-300 ring-offset-2 ring-offset-zinc-800 bg-zinc-800 h-min border shrink-0 border-white/5 hover:bg-zinc-700 w-fit text-xs px-2.5 py-1.5 rounded-2xl flex items-center gap-1"
                   type="button"
                   onClick={(event) => {
                     event.stopPropagation()
@@ -115,7 +115,7 @@ export function SendSecret() {
               </div>
             </div>
           </div>
-          <button className="text-sm shadow-2xs shadow-[#2D6074] bg-cyan-900 border-white/10 w-full px-2 py-2 rounded-xl border font-medium hover:bg-cyan-800 transition-colors flex items-center justify-center gap-1.5">
+          <button className="focus:outline-none focus:ring-1 ring-cyan-300 ring-offset-2 ring-offset-zinc-950 text-sm shadow-2xs shadow-[#2D6074] bg-cyan-900 border-white/10 w-full px-2 py-2 rounded-xl border font-medium hover:bg-cyan-800 transition-colors flex items-center justify-center gap-1.5">
             <KeyRoundIcon size={16} />
             Encrypt
           </button>
